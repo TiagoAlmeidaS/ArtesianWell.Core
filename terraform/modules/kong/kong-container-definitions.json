@@ -1,0 +1,47 @@
+[
+    {
+        "name": "kong",
+        "image": "kong:latest",
+        "essential": true,
+        "portMappings": [
+        {
+            "containerPort": 8000,
+            "hostPort": 8000
+        },
+        {
+            "containerPort": 8443,
+            "hostPort": 8443
+        },
+        {
+            "containerPort": 8001,
+            "hostPort": 8001
+        },
+        {
+            "containerPort": 8444,
+            "hostPort": 8444
+        }
+        ],
+        "environment": [
+        {
+            "name": "KONG_DATABASE",
+            "value": "postgres"
+        },
+        {
+            "name": "KONG_PG_HOST",
+            "value": "${RDS_ENDPOINT}"
+        },
+        {
+            "name": "KONG_PG_PASSWORD",
+            "value": "${RDS_PASSWORD}"
+        },
+        {
+            "name": "KONG_PG_USER",
+            "value": "kong"
+        },
+        {
+            "name": "KONG_PG_DATABASE",
+            "value": "kong"
+        }
+        ]
+    }
+]  
