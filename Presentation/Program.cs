@@ -1,6 +1,8 @@
+using Infra.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shared.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMessageHandling();
+builder.Services.InfraServiceExtension(builder.Configuration);
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo() { Title = "ArtesianWell API", Version = "v1" });
