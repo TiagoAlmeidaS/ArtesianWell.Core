@@ -12,15 +12,27 @@ using Shared.Utils;
 
 namespace Infra.Service.Services;
 
-public class AuthenticationService(IHttpClientFactory httpClientFactory, JsonSerializerOptions jsonSerializerOptions, IMapper mapper, IMessageHandlerService msg): IAuthenticationService
+public class AuthenticationService: IAuthenticationService
 {
-    private HttpClient _httpClient = httpClientFactory.CreateClient(AuthenticationConst.GetAuthenticationNameApi);
+    private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+    private readonly IMapper _mapper;
+    private readonly IMessageHandlerService msg;
+    
+    public AuthenticationService(IHttpClientFactory httpClientFactory, JsonSerializerOptions jsonSerializerOptions, IMapper mapper, IMessageHandlerService msg)
+    {;
+        _httpClient = httpClientFactory.CreateClient(AuthenticationConst.GetAuthenticationNameApi);
+        _jsonSerializerOptions = jsonSerializerOptions;
+        _mapper = mapper;
+        this.msg = msg;
+    }
+
     
     public async Task<SignInResponseDto> SignIn(SignInRequestDto requestDto, CancellationToken cancellationToken)
     {
         try
         {
-            var body = HttpContentUtil.GetHttpContent(requestDto, ContentType.Json, jsonSerializerOptions);
+            var body = HttpContentUtil.GetHttpContent(requestDto, ContentType.Json, _jsonSerializerOptions);
             var response = await _httpClient.PostAsync(AuthenticationConst.GetLoginPath, body, cancellationToken);
             
             if (!response.IsSuccessStatusCode)
@@ -37,7 +49,7 @@ public class AuthenticationService(IHttpClientFactory httpClientFactory, JsonSer
             }
             
             var responseContent = await response.Content.ReadAsStringAsync();
-            var loginResponse = JsonSerializer.Deserialize<SignInResponseDto>(responseContent, jsonSerializerOptions);
+            var loginResponse = JsonSerializer.Deserialize<SignInResponseDto>(responseContent, _jsonSerializerOptions);
             return loginResponse;
         }
         catch (Exception e)
@@ -99,7 +111,7 @@ public class AuthenticationService(IHttpClientFactory httpClientFactory, JsonSer
         try
         {
             var bodyRequestAuthenticationJson =
-                HttpContentUtil.GetHttpContent(requestDto, ContentType.Json, jsonSerializerOptions);
+                HttpContentUtil.GetHttpContent(requestDto, ContentType.Json, _jsonSerializerOptions);
             var response =
                 await _httpClient.PostAsync(AuthenticationConst.GetRegisterPath, bodyRequestAuthenticationJson, cancellationToken);
 
@@ -118,7 +130,7 @@ public class AuthenticationService(IHttpClientFactory httpClientFactory, JsonSer
 
             var responseContent = await response.Content.ReadAsStringAsync();
             var registerJsonRequestDto =
-                JsonSerializer.Deserialize<RegisterJsonDto>(responseContent, jsonSerializerOptions);
+                JsonSerializer.Deserialize<RegisterJsonDto>(responseContent, _jsonSerializerOptions);
             
             return registerJsonRequestDto;
         }

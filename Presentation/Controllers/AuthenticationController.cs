@@ -8,17 +8,22 @@ using Shared.Utils;
 
 namespace Presentation.Controllers;
 
-public class AuthenticationController(
-    IMessageHandlerService errorWarningHandlingService,
-    IMediator mediator)
-    : ArtesianWellBaseController(errorWarningHandlingService)
+public class AuthenticationController: ArtesianWellBaseController
 {
     
+     public IMessageHandlerService ErrorWarningHandlingService { get; }
+     public IMediator Mediator;
+    
+    public AuthenticationController(IMessageHandlerService errorWarningHandlingService, IMediator mediator) : base(errorWarningHandlingService)
+    {
+        Mediator = mediator;
+    }
+
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] SignUpCommand command)
     {
-        var result = await mediator.Send(command, CancellationToken.None);
+        var result = await Mediator.Send(command, CancellationToken.None);
         return HandleResult(result);
     }
 
@@ -26,7 +31,7 @@ public class AuthenticationController(
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] SignInCommand command)
     {
-        var result = await mediator.Send(command, CancellationToken.None);
+        var result = await Mediator.Send(command, CancellationToken.None);
         return HandleResult(result);
     }
 }

@@ -7,8 +7,16 @@ using Shared.Messages;
 
 namespace Application.Usecases.Authentication.Command.SignUp;
 
-public class SignUpCommandHandler(IAuthenticationService service, IMessageHandlerService msg): IRequestHandler<SignUpCommand, SignUpResult>
+public class SignUpCommandHandler: IRequestHandler<SignUpCommand, SignUpResult>
 {
+    private readonly IAuthenticationService service;
+    private readonly IMessageHandlerService msg;
+    
+    public SignUpCommandHandler(IAuthenticationService service, IMessageHandlerService msg)
+    {
+        this.service = service;
+        this.msg = msg;
+    }
     public async Task<SignUpResult> Handle(SignUpCommand request, CancellationToken cancellationToken)
     {
         try
