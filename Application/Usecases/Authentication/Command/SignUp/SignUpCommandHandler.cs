@@ -36,13 +36,7 @@ public class SignUpCommandHandler(IAuthenticationService service, IMessageHandle
                 return new();
             }
             
-            return new()
-            {
-               Scope = response.Scope,
-               Token = response.Token,
-               RefreshToken = response.RefreshToken,
-               TokenExpiration = response.TokenExpiration
-            };
+            return new();
         }
         catch (Exception e)
         {
