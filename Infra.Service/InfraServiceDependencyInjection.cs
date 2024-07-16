@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
 using Application.Mapper;
 using Application.Services.Authentication;
+using Application.Services.Customer;
 using Authentication.Shared.Common;
 using Infra.Service.Clients.Authentication;
+using Infra.Service.Clients.Customer;
 using Infra.Service.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +31,8 @@ public static class InfraServiceDependencyInjection
 
     public static IServiceCollection AddServices(this IServiceCollection services) =>
         services
-            .AddTransient<IAuthenticationService, AuthenticationService>();
+            .AddTransient<IAuthenticationService, AuthenticationService>()
+            .AddTransient<ICustomerService, CustomerService>();
 
     //#TODO: Make implementation of middlewares
     // public static IServiceCollection AddMiddlewares(this IServiceCollection services) =>
@@ -70,7 +73,11 @@ public static class InfraServiceDependencyInjection
     private static IServiceCollection
         AddConfiguration(this IServiceCollection services, IConfiguration configuration) =>
         services
-            .Configure<AuthenticationConfig>(configuration.GetSection(nameof(AuthenticationConfig)));
+            .Configure<AuthenticationConfig>(config =>
+            {
+                config.BaseUrl = Environment.GetEnvironmentVariable("AuthenticationConfig_BaseUrl") ?? configuration[$"{nameof(AuthenticationConfig)}:BaseUrl"];
+            })
+            .Configure<CustomerConfig>(configuration.GetSection(nameof(CustomerConfig)));
 
     private static IServiceCollection AddGlobalConfiguration(this IServiceCollection services)
         => services.AddSingleton(new JsonSerializerOptions

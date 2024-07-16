@@ -53,7 +53,7 @@ public class SignUpCommandHandler(IAuthenticationService service, IMessageHandle
                 .WithStatusCode(HttpStatusCode.BadRequest)
                 .Commit();
             
-            throw;
+            return new();
         }
         
         
