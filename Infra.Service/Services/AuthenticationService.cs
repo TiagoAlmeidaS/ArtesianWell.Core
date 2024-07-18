@@ -7,6 +7,7 @@ using AutoMapper;
 using Infra.Service.Clients.Authentication;
 using Infra.Service.Clients.Authentication.Dto;
 using Shared.Common;
+using Shared.Dto;
 using Shared.Messages;
 using Shared.Utils;
 
@@ -37,8 +38,13 @@ public class AuthenticationService(IHttpClientFactory httpClientFactory, JsonSer
             }
             
             var responseContent = await response.Content.ReadAsStringAsync();
-            var loginResponse = JsonSerializer.Deserialize<SignInResponseDto>(responseContent, jsonSerializerOptions);
-            return loginResponse;
+            var loginResponse = JsonSerializer.Deserialize<ApiResponse<SignInResponseDto>>(responseContent, jsonSerializerOptions);
+            return new()
+            {
+                Token = loginResponse.Data.Token,
+                TokenExpiration = loginResponse.Data.TokenExpiration,
+                RefreshToken = loginResponse.Data.RefreshToken
+            };
         }
         catch (Exception e)
         {
@@ -65,18 +71,9 @@ public class AuthenticationService(IHttpClientFactory httpClientFactory, JsonSer
                 LastName = requestDto.LastName
             };
             
-            var responseRegisterAuthentication = await TakeRegisterAuthenticationUser(bodyRequestAuthentication, cancellationToken);
+            await TakeRegisterAuthenticationUser(bodyRequestAuthentication, cancellationToken);
             
-            var signUpResponse = new SignUpResponseDto()
-            {
-                Token = responseRegisterAuthentication.Token,
-                RefreshToken = responseRegisterAuthentication.RefreshToken,
-                Name = responseRegisterAuthentication.Name,
-                TokenExpiration = responseRegisterAuthentication.TokenExpiration,
-                Scope = responseRegisterAuthentication.Scope
-            };
-
-            return signUpResponse;
+            return new SignUpResponseDto();
 
         }
         catch (Exception e)
@@ -87,8 +84,8 @@ public class AuthenticationService(IHttpClientFactory httpClientFactory, JsonSer
                 .WithStackTrace(e.StackTrace)
                 .WithStatusCode(HttpStatusCode.InternalServerError)
                 .Commit();
-            
-            throw;
+
+            return new SignUpResponseDto();
         }
     }
 
