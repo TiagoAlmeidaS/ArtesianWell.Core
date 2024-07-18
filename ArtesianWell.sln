@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtesianWell.UnitTest", "ArtesianWell.UnitTest\ArtesianWell.UnitTest.csproj", "{23584E7C-DD1C-4906-8A6C-3E9BC426FC55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Serverless", "Core.Serverless\src\Core.Serverless\Core.Serverless.csproj", "{922F6C50-1A26-4914-8266-52A6DCDE5485}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,9 +54,5 @@ Global
 		{23584E7C-DD1C-4906-8A6C-3E9BC426FC55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23584E7C-DD1C-4906-8A6C-3E9BC426FC55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23584E7C-DD1C-4906-8A6C-3E9BC426FC55}.Release|Any CPU.Build.0 = Release|Any CPU
-		{922F6C50-1A26-4914-8266-52A6DCDE5485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{922F6C50-1A26-4914-8266-52A6DCDE5485}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{922F6C50-1A26-4914-8266-52A6DCDE5485}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{922F6C50-1A26-4914-8266-52A6DCDE5485}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

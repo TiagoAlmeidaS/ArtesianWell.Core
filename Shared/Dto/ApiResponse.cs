@@ -9,7 +9,7 @@ public class ApiResponse<T>
     public bool HasError => Errors.Count > 0;
     public bool HasWarning => Warnings.Count > 0;
     public string GetFirstErrorMessage() => Errors.FirstOrDefault()?.ErrorMessage ?? string.Empty;
-    public string GetFirtsErrorCode() => Errors.FirstOrDefault().ErrorCode;
+    public int GetFirtsErrorCode() => Errors.FirstOrDefault().ErrorCode;
 
     public static ApiResponse<T> Success(T response)
     {
@@ -32,7 +32,7 @@ public class ApiResponse<T>
 
 public class ApiError
 {
-    public string ErrorCode { get; set; }
+    public int ErrorCode { get; set; }
     public string ErrorMessage { get; set; }
     public string StackTrace { get; set; }
 }

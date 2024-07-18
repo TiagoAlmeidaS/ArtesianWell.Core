@@ -10,9 +10,16 @@ public class CreateCustomerCommandHandler(ICustomerService customerService, IMes
 {
     public async Task<CreateCustomerResult> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
-        var response = await customerService.CreateCustomer(new());
+        var response = await customerService.CreateCustomer(new()
+        {
+            Email = request.Email,
+            Number = request.Phone,
+            Name = request.Name,
+            Document = request.Document,
+            ProfileType = request.ProfileType
+        }, cancellationToken);
         
-        if(response == null)
+        if(response.HasError)
         {
             messageHandlerService.AddError()
                 .WithErrorCode(Guid.NewGuid().ToString())
@@ -25,8 +32,9 @@ public class CreateCustomerCommandHandler(ICustomerService customerService, IMes
         
         return new()
         {
-            Name = response.Name,
-            Email = response.Email
+            Name = response.Data.Name,
+            Email = response.Data.Email,
+            ProfileType = response.Data.ProfileType,
         };
     }
 }

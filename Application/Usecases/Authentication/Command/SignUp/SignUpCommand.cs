@@ -11,6 +11,7 @@ public class SignUpCommand : IRequest<SignUpResult>
     public string LastName { get; set; }
     public string PhoneNumber { get; set; }
     public string Document { get; set; }
+    public int ProfileType { get; set; }
 }
 
 public class SignUpCommandAbstractValidator : AbstractValidator<SignUpCommand>

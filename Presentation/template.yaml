@@ -9,7 +9,7 @@ Resources:
       Description: ''
       MemorySize: 256
       Timeout: 500
-      Handler: Authentication.Presentation.WebServerless
+      Handler: Presentation
       Runtime: dotnet8
       Architectures:
         - x86_64

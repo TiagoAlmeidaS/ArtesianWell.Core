@@ -34,22 +34,6 @@ public static class InfraServiceDependencyInjection
             .AddTransient<IAuthenticationService, AuthenticationService>()
             .AddTransient<ICustomerService, CustomerService>();
 
-    //#TODO: Make implementation of middlewares
-    // public static IServiceCollection AddMiddlewares(this IServiceCollection services) =>
-    //     services.AddTransient<RequestBodyLoggingMiddleware>()
-    //         .AddTransient<ResponseBodyLoggingMiddleware>()
-    //         .AddSingleton<ITelemetryInitializer, TelemetryMiddleware>();
-
-    // public static IApplicationBuilder UseRequestBodyLogging(this IApplicationBuilder builder)
-    // {
-    //     return builder.UseMiddleware<RequestBodyLoggingMiddleware>();
-    // }
-
-    // public static IApplicationBuilder UseResponseBodyLogging(this IApplicationBuilder builder)
-    // {
-    //     return builder.UseMiddleware<ResponseBodyLoggingMiddleware>();
-    // }
-
     public static IServiceCollection AddAutomapperProfiles(this IServiceCollection services) =>
         services
             .AddAutoMapper(typeof(AuthenticationProfile));
@@ -67,16 +51,21 @@ public static class InfraServiceDependencyInjection
             client.BaseAddress = new Uri(authenticationConfig.Value.BaseUrl);
         });
         
+        var customerConfig = scopedProvider.GetRequiredService<IOptionsSnapshot<CustomerConfig>>();
+        services.AddHttpClient(CustomerConst.GetApiName, client =>
+        {
+            client.DefaultRequestHeaders.Add(CommonConsts.Headers.Accept,
+                CommonConsts.Headers.AcceptJsonContentValue);
+            client.BaseAddress = new Uri(customerConfig.Value.BaseUrl);
+        });
+        
         return services;
     }
 
     private static IServiceCollection
         AddConfiguration(this IServiceCollection services, IConfiguration configuration) =>
         services
-            .Configure<AuthenticationConfig>(config =>
-            {
-                config.BaseUrl = Environment.GetEnvironmentVariable("AuthenticationConfig_BaseUrl") ?? configuration[$"{nameof(AuthenticationConfig)}:BaseUrl"];
-            })
+            .Configure<AuthenticationConfig>(configuration.GetSection(nameof(AuthenticationConfig)))
             .Configure<CustomerConfig>(configuration.GetSection(nameof(CustomerConfig)));
 
     private static IServiceCollection AddGlobalConfiguration(this IServiceCollection services)
