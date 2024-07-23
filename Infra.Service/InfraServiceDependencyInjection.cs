@@ -1,13 +1,21 @@
 ﻿using System.Text.Json;
+using Application.Interfaces;
 using Application.Mapper;
 using Application.Services.Authentication;
 using Application.Services.Customer;
 using Authentication.Shared.Common;
+using Domain.Repositories;
 using Infra.Service.Clients.Authentication;
 using Infra.Service.Clients.Customer;
+using Infra.Service.Configurations;
+using Infra.Service.Context;
+using Infra.Service.Repositories;
 using Infra.Service.Services;
+using Infra.Service.Unit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Infra.Service;
@@ -20,11 +28,11 @@ public static class InfraServiceDependencyInjection
         services
             .AddServices()
             .AddAutomapperProfiles()
-            // .AddMiddlewares()
             .AddConfiguration(configuration)
             .AddExternalServices()
-            .AddGlobalConfiguration();
-            // .AddCacheService(configuration);
+            .AddGlobalConfiguration()
+            .AddDbConnection(configuration)
+            .AddRepositories();
 
         return services;
     }
@@ -66,7 +74,9 @@ public static class InfraServiceDependencyInjection
         AddConfiguration(this IServiceCollection services, IConfiguration configuration) =>
         services
             .Configure<AuthenticationConfig>(configuration.GetSection(nameof(AuthenticationConfig)))
-            .Configure<CustomerConfig>(configuration.GetSection(nameof(CustomerConfig)));
+            .Configure<CustomerConfig>(configuration.GetSection(nameof(CustomerConfig)))
+            .Configure<ServiceDBContext>(configuration.GetSection(nameof(ServiceDBContext)))
+            .Configure<ServicesDbConfig>(configuration.GetSection(nameof(ServicesDbConfig)));
 
     private static IServiceCollection AddGlobalConfiguration(this IServiceCollection services)
         => services.AddSingleton(new JsonSerializerOptions
@@ -74,4 +84,31 @@ public static class InfraServiceDependencyInjection
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true
         });
+    
+    private static IServiceCollection AddDbConnection(this IServiceCollection services, IConfiguration configuration)
+    {
+        var scope = services.BuildServiceProvider().CreateScope();
+        var serviceProvider = scope.ServiceProvider;
+        var customerDbConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<ServicesDbConfig>>();
+
+        if (customerDbConfig.Value.UseInMemoryDatabase)
+        {
+            services.AddDbContextPool<ServiceDBContext>(options =>
+                options.UseInMemoryDatabase("TestingDB"));
+        }
+        else
+        {
+            services.AddDbContextPool<ServiceDBContext>(options => options.UseNpgsql(configuration.GetConnectionString("DB"))
+                .EnableSensitiveDataLogging() 
+                .LogTo(Console.WriteLine, LogLevel.Information));
+            ;
+        }
+
+        return services;
+    }
+    
+    public static IServiceCollection AddRepositories(this IServiceCollection services) =>
+        services
+            .AddTransient<IServiceRepository, ServiceRepository>()
+            .AddTransient<IUnitOfWork, UnitOfWorkService>();
 }
