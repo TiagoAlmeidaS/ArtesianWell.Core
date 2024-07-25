@@ -1,3 +1,4 @@
+using Domain.Entities.Budget;
 using Domain.Entities.OrderService;
 using Domain.Entities.OrderStatus;
 using Domain.Entities.Service;
@@ -11,6 +12,7 @@ public class ServiceDBContext: DbContext
     public DbSet<ServiceEntity> Services => Set<ServiceEntity>();
     public DbSet<OrderServiceEntity> OrderServices => Set<OrderServiceEntity>();
     public DbSet<OrderStatusEntity> OrderStatus => Set<OrderStatusEntity>();
+    public DbSet<BudgetEntity> Budgets => Set<BudgetEntity>();
 
     public ServiceDBContext(DbContextOptions<ServiceDBContext> options) : base(options)
     {
@@ -21,5 +23,6 @@ public class ServiceDBContext: DbContext
         builder.ApplyConfiguration(new ServiceModelConfiguration());
         builder.ApplyConfiguration(new OrderServiceModelConfiguration());
         builder.ApplyConfiguration(new OrderStatusServiceModelConfiguration());
+        builder.ApplyConfiguration(new BudgetModelConfiguration());
     }
 }

@@ -25,11 +25,11 @@ CREATE TABLE IF NOT EXISTS "OrderServices"
 CREATE TABLE IF NOT EXISTS "OrderStatus"
 (
     "Id"              INT PRIMARY KEY,
-    "Name"            VARCHAR(50) NOT NULL,
-    "Description"     TEXT        NOT NULL,
-    "PossibleActions" TEXT        NOT NULL,
-    "UpdatedAt" timestamp with time zone NOT NULL DEFAULT now(),
-    "CreatedAt" timestamp with time zone NOT NULL DEFAULT now()
+    "Name"            VARCHAR(50)              NOT NULL,
+    "Description"     TEXT                     NOT NULL,
+    "PossibleActions" TEXT                     NOT NULL,
+    "UpdatedAt"       timestamp with time zone NOT NULL DEFAULT now(),
+    "CreatedAt"       timestamp with time zone NOT NULL DEFAULT now()
 );
 
 -- Inserção dos dados na tabela OrderStatus
@@ -53,3 +53,16 @@ VALUES (1, 'Solicitado', 'O cliente enviou uma solicitação de orçamento e est
        (9, 'Cancelado', 'A ordem de serviço foi cancelada por alguma razão (ex: cliente desistiu, problemas técnicos).',
         'Nenhuma ação adicional necessária.'),
        (10, 'Orçamento Rejeitado', 'O cliente rejeitou o orçamento proposto.', 'Nenhuma ação adicional necessária.');
+
+CREATE TABLE IF NOT EXISTS "Budgets"
+(
+    "Id"                 TEXT PRIMARY KEY,
+    "OrderServiceId"     TEXT      NOT NULL,
+    "Status"             TEXT      NOT NULL,
+    "DescriptionService" TEXT      NOT NULL,
+    "DateChoose"         TIMESTAMP NOT NULL,
+    "DateAccepted"       TIMESTAMP NOT NULL,
+    "TotalValue"         DECIMAL   NOT NULL,
+    "UpdatedAt"          TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    "CreatedAt"          TIMESTAMP WITH TIME ZONE DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
+);
