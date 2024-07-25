@@ -25,10 +25,10 @@ public class CreateBudgetCommandHandler(IBudgetRepository budgetRepository, IMes
                 OrderServiceId = request.OrderServiceId
             }, cancellationToken);
 
-            // await mediator.Send(new SetBudgetOrderServiceStatusCommand()
-            // {
-            //     OrderServiceId = request.OrderServiceId
-            // }, cancellationToken);
+            await mediator.Send(new SetBudgetOrderServiceStatusCommand()
+            {
+                OrderServiceId = request.OrderServiceId
+            }, cancellationToken);
 
             return new CreateBudgetResult()
             {
