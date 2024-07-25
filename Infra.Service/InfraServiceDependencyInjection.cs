@@ -9,6 +9,7 @@ using Infra.Service.Clients.Authentication;
 using Infra.Service.Clients.Customer;
 using Infra.Service.Configurations;
 using Infra.Service.Context;
+using Infra.Service.Interfaces;
 using Infra.Service.Repositories;
 using Infra.Service.Services;
 using Infra.Service.Unit;
@@ -112,5 +113,6 @@ public static class InfraServiceDependencyInjection
             .AddTransient<IServiceRepository, ServiceRepository>()
             .AddTransient<IOrderServiceRepository, OrderServiceRepository>()
             .AddTransient<IOrderStatusRepository, OrderStatusRepository>()
+            .AddTransient<IBudgetRepository, BudgetRepository>()
             .AddTransient<IUnitOfWork, UnitOfWorkService>();
 }
