@@ -13,8 +13,7 @@ public class AuthenticationController(
     IMediator mediator)
     : ArtesianWellBaseController(errorWarningHandlingService)
 {
-    
-    [HttpPost]
+    [HttpPost("signup")]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] SignUpCommand command)
     {
@@ -22,7 +21,7 @@ public class AuthenticationController(
         return HandleResult(result);
     }
 
-    [HttpPost]
+    [HttpPost("signin")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] SignInCommand command)
     {

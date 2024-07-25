@@ -4,6 +4,9 @@ using Shared.Messages;
 
 namespace Shared.Utils;
 
+[Route("api/[controller]")]
+[Produces("application/json")]
+[ApiController]
 public class ArtesianWellBaseController: ControllerBase
 {
     private readonly IMessageHandlerService _errorWarningHandlingService;

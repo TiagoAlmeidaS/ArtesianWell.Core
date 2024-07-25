@@ -24,7 +24,7 @@ public static class ResponseFormatter
         => messageHandlingService.GetErrors()
             .Select(e => new ApiError
             {
-                ErrorCode = e.Code,
+                ErrorCode = int.TryParse(e.Code, out var code) ? code : default(int),
                 ErrorMessage = e.Message,
                 StackTrace = e.StackTrace
             })
