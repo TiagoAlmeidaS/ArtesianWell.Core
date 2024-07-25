@@ -1,7 +1,6 @@
 using System.Net;
 using Domain.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Shared.Common;
 using Shared.Messages;
 

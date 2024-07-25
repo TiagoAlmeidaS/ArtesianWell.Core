@@ -20,4 +20,8 @@
       <ProjectReference Include="..\Domain\Domain.csproj" />
       <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Usecases\OrderService\Query\" />
+    </ItemGroup>
 </Project>

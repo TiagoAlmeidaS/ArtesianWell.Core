@@ -1,5 +1,7 @@
-﻿using Application;
+﻿using System.Reflection;
+using Application;
 using Infra.Service;
+using Microsoft.OpenApi.Models;
 using Shared.Messages;
 
 namespace Presentation;
@@ -16,6 +18,19 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "API Documentation",
+                Description = "API Documentation for ArtesianWell"
+            });
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            c.IncludeXmlComments(xmlPath);
+        });
         services.AddControllers();
         services.ApplicationExtension();
         services.AddMessageHandling();
@@ -29,6 +44,11 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+            });
         }
 
         app.UseHttpsRedirection();

@@ -110,5 +110,7 @@ public static class InfraServiceDependencyInjection
     public static IServiceCollection AddRepositories(this IServiceCollection services) =>
         services
             .AddTransient<IServiceRepository, ServiceRepository>()
+            .AddTransient<IOrderServiceRepository, OrderServiceRepository>()
+            .AddTransient<IOrderStatusRepository, OrderStatusRepository>()
             .AddTransient<IUnitOfWork, UnitOfWorkService>();
 }
