@@ -1,4 +1,5 @@
 using System.Net;
+using Application.Usecases.OrderStatus.Query.GetOrderStatus;
 using Domain.Repositories;
 using MediatR;
 using Shared.Common;
@@ -6,7 +7,7 @@ using Shared.Messages;
 
 namespace Application.Usecases.OrderService.Query.GetOrderService;
 
-public class GetOrderServiceQueryHandler(IOrderServiceRepository orderServiceRepository, IMessageHandlerService msg): IRequestHandler<GetOrderServiceQuery, GetOrderServiceResult>
+public class GetOrderServiceQueryHandler(IOrderServiceRepository orderServiceRepository, IMessageHandlerService msg, IMediator mediator): IRequestHandler<GetOrderServiceQuery, GetOrderServiceResult>
 {
     public async Task<GetOrderServiceResult> Handle(GetOrderServiceQuery request, CancellationToken cancellationToken)
     {
@@ -25,11 +26,15 @@ public class GetOrderServiceQueryHandler(IOrderServiceRepository orderServiceRep
             }
 
             var orderService = orderServices.First();
+            var orderStatus = await mediator.Send(new GetOrderStatusQuery()
+            {
+                OrderStatusId = int.Parse(orderService.Status)
+            }, cancellationToken);
             
             return new ()
             {
                 Id = orderService.Id,
-                Status = orderService.Status,
+                Status = orderStatus.Name,
                 ServiceId = orderService.ServiceId,
                 ClientId = orderService.ClientId,
                 BudgetSchedulingDate = orderService.BudgetSchedulingDate,

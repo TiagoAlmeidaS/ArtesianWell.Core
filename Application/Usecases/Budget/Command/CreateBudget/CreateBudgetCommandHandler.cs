@@ -18,8 +18,8 @@ public class CreateBudgetCommandHandler(IBudgetRepository budgetRepository, IMes
             {
                 Id = Guid.NewGuid().ToString(),
                 Status = StatusBudgetConsts.GetStatusBudgetEnum(StatusBudgetEnum.WatingForAction),
-                DateAccepted = request.DateAccepted,
-                DateChoose = request.DateChoose,
+                DateAccepted = DateTime.MinValue,
+                DateChoose = DateTime.MinValue,
                 DescriptionService = request.DescriptionService,
                 TotalValue = request.TotalValue,
                 OrderServiceId = request.OrderServiceId

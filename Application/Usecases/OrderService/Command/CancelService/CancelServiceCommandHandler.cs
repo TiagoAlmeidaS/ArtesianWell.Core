@@ -6,17 +6,17 @@ using Shared.Common;
 using Shared.Consts;
 using Shared.Messages;
 
-namespace Application.Usecases.OrderService.Command.SetBudgetOrderServiceStatus;
+namespace Application.Usecases.OrderService.Command.CancelService;
 
-public class SetBudgetOrderServiceStatusCommandHandler(IMediator mediator, IMessageHandlerService msg): IRequestHandler<SetBudgetOrderServiceStatusCommand, SetBudgetOrderServiceStatusResult>
+public class CancelServiceCommandHandler(IMessageHandlerService msg, IMediator mediator): IRequestHandler<CancelServiceCommand, CancelServiceResult>
 {
-    public async Task<SetBudgetOrderServiceStatusResult> Handle(SetBudgetOrderServiceStatusCommand request, CancellationToken cancellationToken)
+    public async Task<CancelServiceResult> Handle(CancelServiceCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var orderStatus = await mediator.Send(new GetOrderStatusQuery()
             {
-                Status = StatusOrderConst.GetNameWithType(StatusOrderEnum.OrçamentoEnviado)
+                Status = StatusOrderConst.GetNameWithType(StatusOrderEnum.Cancelado)
             }, cancellationToken);
             
             var orderService = mediator.Send(new ChangeStatusOrderServiceCommand()
@@ -33,10 +33,10 @@ public class SetBudgetOrderServiceStatusCommandHandler(IMediator mediator, IMess
                     .WithStatusCode(HttpStatusCode.InternalServerError)
                     .Commit();
                 
-                return new SetBudgetOrderServiceStatusResult();
+                return new CancelServiceResult();
             }
             
-            return new SetBudgetOrderServiceStatusResult();
+            return new CancelServiceResult();
         }
         catch (Exception e)
         {
@@ -47,7 +47,7 @@ public class SetBudgetOrderServiceStatusCommandHandler(IMediator mediator, IMess
                 .WithStackTrace(e.StackTrace)
                 .Commit();
             
-            return new SetBudgetOrderServiceStatusResult();
+            return new CancelServiceResult();
         }
     }
 }

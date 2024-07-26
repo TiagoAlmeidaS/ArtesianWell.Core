@@ -1,25 +1,32 @@
 using System.Net;
+using Application.Usecases.OrderStatus.Query.GetOrderStatus;
 using Domain.Entities.OrderService;
 using Domain.Repositories;
 using MediatR;
+using Shared.Consts;
 using Shared.Messages;
 
 namespace Application.Usecases.OrderService.Command.CreateOrderService;
 
-public class CreateOrderServiceCommandHandler(IOrderServiceRepository orderServiceRepository, IMessageHandlerService msg): IRequestHandler<CreateOrderServiceCommand, CreateOrderServiceResult>
+public class CreateOrderServiceCommandHandler(IOrderServiceRepository orderServiceRepository, IMessageHandlerService msg, IMediator mediator): IRequestHandler<CreateOrderServiceCommand, CreateOrderServiceResult>
 {
     public async Task<CreateOrderServiceResult> Handle(CreateOrderServiceCommand request, CancellationToken cancellationToken)
     {
         try
         {
+            var orderStatus = await mediator.Send(new GetOrderStatusQuery()
+            {
+                Status = StatusOrderConst.GetNameWithType(StatusOrderEnum.Solicitado)
+            }, cancellationToken);
+            
             var response = await orderServiceRepository.Insert(new OrderServiceEntity()
             {
                 Id = Guid.NewGuid().ToString(),
-                Status = request.Status,
+                Status = orderStatus.Id.ToString(),
                 ClientId = request.ClientId,
                 ServiceId = request.ServiceId,
                 BudgetSchedulingDate = request.BudgetSchedulingDate.ToUniversalTime(),
-                ServiceSchedulingDate = request.ServiceSchedulingDate.ToUniversalTime()
+                ServiceSchedulingDate = DateTime.MinValue
             }, cancellationToken);
 
             return new CreateOrderServiceResult()

@@ -1,22 +1,23 @@
 using System.Net;
 using Application.Usecases.OrderService.Command.ChangeStatusOrderService;
 using Application.Usecases.OrderStatus.Query.GetOrderStatus;
+using Domain.Repositories;
 using MediatR;
 using Shared.Common;
 using Shared.Consts;
 using Shared.Messages;
 
-namespace Application.Usecases.OrderService.Command.SetBudgetOrderServiceStatus;
+namespace Application.Usecases.OrderService.Command.ContractService;
 
-public class SetBudgetOrderServiceStatusCommandHandler(IMediator mediator, IMessageHandlerService msg): IRequestHandler<SetBudgetOrderServiceStatusCommand, SetBudgetOrderServiceStatusResult>
+public class ContractServiceCommandHandler(IMediator mediator, IMessageHandlerService msg): IRequestHandler<ContractServiceCommand, ContractServiceResult>
 {
-    public async Task<SetBudgetOrderServiceStatusResult> Handle(SetBudgetOrderServiceStatusCommand request, CancellationToken cancellationToken)
+    public async Task<ContractServiceResult> Handle(ContractServiceCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var orderStatus = await mediator.Send(new GetOrderStatusQuery()
             {
-                Status = StatusOrderConst.GetNameWithType(StatusOrderEnum.OrçamentoEnviado)
+                Status = StatusOrderConst.GetNameWithType(StatusOrderEnum.DataSelecionada)
             }, cancellationToken);
             
             var orderService = mediator.Send(new ChangeStatusOrderServiceCommand()
@@ -33,10 +34,10 @@ public class SetBudgetOrderServiceStatusCommandHandler(IMediator mediator, IMess
                     .WithStatusCode(HttpStatusCode.InternalServerError)
                     .Commit();
                 
-                return new SetBudgetOrderServiceStatusResult();
+                return new ContractServiceResult();
             }
             
-            return new SetBudgetOrderServiceStatusResult();
+            return new ContractServiceResult();
         }
         catch (Exception e)
         {
@@ -47,7 +48,7 @@ public class SetBudgetOrderServiceStatusCommandHandler(IMediator mediator, IMess
                 .WithStackTrace(e.StackTrace)
                 .Commit();
             
-            return new SetBudgetOrderServiceStatusResult();
+            return new ContractServiceResult();
         }
     }
 }
