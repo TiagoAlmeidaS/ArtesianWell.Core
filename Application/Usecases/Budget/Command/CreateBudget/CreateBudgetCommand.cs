@@ -6,10 +6,8 @@ namespace Application.Usecases.Budget.Command.CreateBudget;
 public class CreateBudgetCommand : IRequest<CreateBudgetResult>
 {
     public string OrderServiceId { get; set; }
-    public DateTime DateAccepted { get; set; } = DateTime.MinValue;
     public decimal TotalValue { get; set; }
     public string DescriptionService { get; set; }
-    public DateTime DateChoose { get; set; } = DateTime.MinValue;
 }
 
 public class ValidateCreateBudgetCommand : AbstractValidator<CreateBudgetCommand>

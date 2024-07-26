@@ -1,4 +1,5 @@
 using System.Net;
+using Application.Usecases.OrderService.Command.ContractService;
 using Domain.Repositories;
 using MediatR;
 using Shared.Common;
@@ -7,7 +8,7 @@ using Shared.Messages;
 
 namespace Application.Usecases.Budget.Command.ContractBudget;
 
-public class ContractBudgetCommandHandler(IBudgetRepository budgetRepository, IMessageHandlerService msg): IRequestHandler<ContractBudgetCommand, ContractBudgetResult>
+public class ContractBudgetCommandHandler(IBudgetRepository budgetRepository, IMessageHandlerService msg, IMediator mediator): IRequestHandler<ContractBudgetCommand, ContractBudgetResult>
 {
     public async Task<ContractBudgetResult> Handle(ContractBudgetCommand request, CancellationToken cancellationToken)
     {
@@ -31,6 +32,11 @@ public class ContractBudgetCommandHandler(IBudgetRepository budgetRepository, IM
             budgetEntity.DateAccepted = DateTime.Now;
             budgetEntity.DateChoose = request.DateServiceSelected;
             await budgetRepository.Update(budgetEntity, cancellationToken);
+
+            await mediator.Send(new ContractServiceCommand()
+            {
+                OrderServiceId = budgetEntity.OrderServiceId
+            }, cancellationToken);
             
             return new ContractBudgetResult();
         }

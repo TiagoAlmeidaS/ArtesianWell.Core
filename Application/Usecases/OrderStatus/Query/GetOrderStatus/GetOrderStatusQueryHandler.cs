@@ -12,7 +12,7 @@ public class GetOrderStatusQueryHandler(IOrderStatusRepository statusRepository,
     {
         try
         {
-            var orderStatusEntities = await statusRepository.GetWhere(x => x.Id == request.OrderStatusId, cancellationToken);
+            var orderStatusEntities = await statusRepository.GetWhere(x => x.Id == request.OrderStatusId || x.Name == request.Status, cancellationToken);
             if (!orderStatusEntities.Any())
             {
                 msg.AddError()

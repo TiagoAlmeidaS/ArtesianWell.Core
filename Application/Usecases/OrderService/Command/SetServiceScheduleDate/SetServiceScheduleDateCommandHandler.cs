@@ -1,5 +1,6 @@
 using System.Net;
 using Application.Usecases.OrderService.Command.ChangeStatusOrderService;
+using Application.Usecases.OrderStatus.Query.GetOrderStatus;
 using Domain.Repositories;
 using MediatR;
 using Shared.Common;
@@ -28,8 +29,21 @@ public class SetServiceScheduleDateCommandHandler(IOrderServiceRepository orderS
             }
             
             var serviceEntity = servicesEntities.First();
+
+            var orderStatus = await mediator.Send(new GetOrderStatusQuery()
+            {
+                Status = StatusOrderConst.GetNameWithType(StatusOrderEnum.DataSelecionada)
+            }, cancellationToken);
+
+
+            await mediator.Send(new ChangeStatusOrderServiceCommand()
+            {
+                Status = orderStatus.Id.ToString(),
+                Id = serviceEntity.Id
+            }, cancellationToken);
             
             serviceEntity.ServiceSchedulingDate = request.ServiceSchedulingDate;
+            
             
             var response = await orderServiceRepository.Update(serviceEntity, cancellationToken);
 

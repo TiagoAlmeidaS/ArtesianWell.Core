@@ -1,4 +1,5 @@
 using System.Net;
+using Application.Usecases.OrderService.Command.CancelService;
 using Domain.Repositories;
 using MediatR;
 using Shared.Common;
@@ -7,7 +8,7 @@ using Shared.Messages;
 
 namespace Application.Usecases.Budget.Command.RejectBudget;
 
-public class RejectBudgetCommandHandler(IBudgetRepository budgetRepository, IMessageHandlerService msg): IRequestHandler<RejectBudgetCommand, RejectBudgetResult>
+public class RejectBudgetCommandHandler(IBudgetRepository budgetRepository, IMessageHandlerService msg, IMediator mediator): IRequestHandler<RejectBudgetCommand, RejectBudgetResult>
 {
     public async Task<RejectBudgetResult> Handle(RejectBudgetCommand request, CancellationToken cancellationToken)
     {
@@ -30,6 +31,11 @@ public class RejectBudgetCommandHandler(IBudgetRepository budgetRepository, IMes
             budgetEntity.Status = StatusBudgetConsts.GetStatusBudgetEnum(StatusBudgetEnum.Rejected);
             budgetEntity.UpdatedAt = DateTime.Now;
             await budgetRepository.Update(budgetEntity, cancellationToken);
+
+            await mediator.Send(new CancelServiceCommand()
+            {
+                OrderServiceId = budgetEntity.OrderServiceId
+            }, cancellationToken);
             
             return new RejectBudgetResult();
         }
