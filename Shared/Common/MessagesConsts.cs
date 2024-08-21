@@ -17,4 +17,9 @@ public class MessagesConsts
     
     public static string ErrorBudgetAlreadyExists = "Ops! Parece que já existe um orçamento com esses dados. Por favor, verifique e tente novamente.";
     public static string ErrorBudgetNotFound = "Ops! Parece que não encontramos nenhum orçamento com esses dados. Por favor, verifique e tente novamente.";
+
+    public static string ErrorRequired = "Ops! Parece que o campo {0} é obrigatório. Por favor, verifique e tente novamente.";
+    
+    public static string ErrorScheduleNotFound = "Ops! Parece que não encontramos nenhum agendamento com esses dados. Por favor, verifique e tente novamente.";
+    public static string ErrorEventNotFound = "Ops! Parece que não encontramos nenhum evento com esses dados. Por favor, verifique e tente novamente.";
 }
